@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enquiry Form | New Cambridge College</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header class="foreign-header">
+    <a class="college-logo" href="home.html"><span>C</span> New Cambridge College<small>KNOWLEDGE IS POWER</small></a>
+    <nav>
+      <a href="home.html">Home</a>
+      <a href="city.html">City</a>
+      <a href="form.html">Form</a>
+      <a class="contact-link" href="contact.html">Contact Us</a>
+    </nav>
+    <a class="consult-button" href="city.html#appointment">BOOK FREE CONSULTATION</a>
+  </header>
+  <div class="foreign-strip"></div>
+
+  <main class="form-page">
+    <h1>Enquiry Form</h1>
+    <p>Share your details and our team will get in touch with you shortly.</p>
+
+    <form class="contact-form lead-form" id="leadForm" novalidate>
+      <label>Name
+        <input type="text" name="name" autocomplete="name" required>
+      </label>
+      <label>Phone Number
+        <input type="tel" name="phone" autocomplete="tel" required pattern="[0-9+\-\s()]{7,20}">
+      </label>
+      <label>City
+        <input type="text" name="city" autocomplete="address-level2" required>
+      </label>
+      <button type="submit">Submit</button>
+      <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+    </form>
+  </main>
+
+  <script>
+    const leadForm = document.getElementById('leadForm');
+    const formStatus = document.getElementById('formStatus');
+
+    leadForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const submitButton = leadForm.querySelector('button[type="submit"]');
+      const data = {
+        name: leadForm.name.value.trim(),
+        phone: leadForm.phone.value.trim(),
+        city: leadForm.city.value.trim(),
+      };
+
+      formStatus.textContent = '';
+      formStatus.className = 'form-status';
+
+      if (!data.name || !data.phone || !data.city) {
+        formStatus.textContent = 'Please fill in all fields.';
+        formStatus.classList.add('form-status--error');
+        return;
+      }
+
+      submitButton.disabled = true;
+      submitButton.textContent = 'Sending...';
+
+      try {
+        const response = await fetch('/api/send-form', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+          throw new Error(result.message || 'Something went wrong.');
+        }
+
+        formStatus.textContent = 'Thank you! We will contact you soon.';
+        formStatus.classList.add('form-status--success');
+        leadForm.reset();
+      } catch (error) {
+        formStatus.textContent = 'Failed to send. Please try again later.';
+        formStatus.classList.add('form-status--error');
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Submit';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/src/home.html"
+    },
+    {
+      "source": "/home.html",
+      "destination": "/src/home.html"
+    },
+    {
+      "source": "/contact.html",
+      "destination": "/src/contact.html"
+    },
+    {
+      "source": "/city.html",
+      "destination": "/src/city.html"
+    },
+    {
+      "source": "/form.html",
+      "destination": "/src/form.html"
+    }
+  ]
+}
